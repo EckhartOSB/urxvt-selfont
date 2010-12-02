@@ -1,0 +1,25 @@
+.\" man page for the pcpustat utility.
+.Dd December 2, 2010
+.Dt urxvt-selfont 1
+.Os
+.Sh NAME
+.Nm urxvt-selfont
+.Nd Font selection utility for urxvt (rxvt-unicode)
+.Sh SYNOPSIS
+.Nm
+.Op Fl p Ar pixelsize
+.Sh DESCRIPTION
+The urxvt-selfont utility presents a list of fonts produced by fc-list(1), and allows the user to choose one or cancel.  If the user does not cancel, the selected font will be applied to the current terminal window, which is presumed to be using urxvt(1).  Additionally, the index in the list and the name of the font will be displayed.  To make use of the font on a permanent basis, you must add it to the URxvt.font resource as described in urxvt(1).
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Fl p, pixelsize Ar pixelsize
+Specify the pixelsize for the font.  If not specified, the default pixelsize for the font will be used.
+.El
+.Sh SEE ALSO
+fc-list(1), urxvt(1)
+.Sh AUTHOR
+Sterling (Chip) Camden <sterling@camdensoftware.com>
+.Sh WWW
+<http://chipstips.com/?tag=rburxvtselfont>
+.Sh BUGS
+None known.

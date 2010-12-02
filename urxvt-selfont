@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+pixelsize = nil
+optparse = OptionParser.new do |opts|
+  opts.banner = "usage: #{$0} [-p pixelsize]"
+
+  opts.on('-p', '--pixelsize n', 'Specify pixel size to use') do |p|
+    pixelsize = p
+  end
+
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::InvalidOption, OptionParser::MissingArgument => e
+  puts e
+  puts optparse
+  exit 1
+end
+
+# Gather the fonts from fc-list
+
+fonts = []
+File.popen "fc-list", "r" do |p|
+  while line = p.gets
+    names, styles = line.chomp.split /:style=/
+    styles = styles ? styles.split(/,/) : []
+    names.split(/,/).each do |name|
+      fonts << name
+      styles.each { |style| fonts << "#{name}:style=#{style}" }
+    end
+  end
+end
+fonts.sort!.uniq!
+dlgargs = '--menu "Select font" -1 -1 20'
+fonts.each_with_index do |font, ndx|
+  dlgargs << ' "' + (ndx+1).to_s + '" "' + font + '"'
+end
+
+# Ask the user which one to use
+
+tmpfile=`mktemp "/tmp/$0.XXXX"`
+system "dialog #{dlgargs} 2>#{tmpfile}"
+choice = $? == 0 ? `cat #{tmpfile}`.to_i-1: nil
+system "rm #{tmpfile}"
+puts "\033]50;xft:#{fonts[choice]}#{pixelsize ? ':pixelsize='+pixelsize : ''}\007\n#{choice}  #{fonts[choice]}\n" if choice
